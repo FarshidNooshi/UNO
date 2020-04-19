@@ -29,6 +29,9 @@ class Game implements Strings {
         playersManager = new PlayersManager(numberOfPlayers, numberOfComputers, scanner);
         cardSheet.initialize(playersManager);
 
+        if (cardSheet.getOnTop().getMove().equals("Reverse"))
+            playersManager.setDirection(numberOfPlayers - 1);
+
         while (!playersManager.finish())
             playersManager.go(cardSheet);
         endGame();

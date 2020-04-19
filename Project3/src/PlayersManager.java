@@ -52,14 +52,21 @@ public class PlayersManager implements Strings {
     }
 
     public void go(CardSheet cardSheet) throws InterruptedException {
-        Thread.sleep(1000);
+        Thread.sleep(3000);
         clrScreen();
         print();
         System.out.print(players[currentTurn].color + "Player " + (currentTurn + 1) + " should move\n" + ANSI_RESET);
-
+        if (isComputer[currentTurn]) {
+            cardSheet.getOnTop().print();
+            players[currentTurn].printUserCards();
+        }
         int tmp = players[currentTurn].move(scanner, cardSheet);
         while (tmp == -1) {
-            Thread.sleep(1000);
+            if (isComputer[currentTurn]) {
+                tmp = players[currentTurn].move(scanner, cardSheet);
+                continue;
+            }
+            Thread.sleep(3000);
             clrScreen();
             print();
             System.out.print(players[currentTurn].color + "Player " + (currentTurn + 1) + " should move again\n" + ANSI_RESET);
@@ -73,6 +80,10 @@ public class PlayersManager implements Strings {
 
         currentTurn += direction;
         currentTurn %= numberOfPlayers;
+    }
+
+    public void setDirection(int direction) {
+        this.direction = direction;
     }
 
     public boolean finish() {

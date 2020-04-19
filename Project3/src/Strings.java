@@ -9,7 +9,6 @@ interface Strings {
     String ANSI_PURPLE = "\u001B[35m";
     String ANSI_CYAN = "\u001B[36m";
     String ANSI_WHITE = "\u001B[37m";
-    char euro = '€', dollar = '$';
     char counterClockwise = '⟲';
     char clockwise = '⟳';
     char winner = '⭐';

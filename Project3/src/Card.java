@@ -13,18 +13,18 @@ class Card implements Strings {
     }
 
     void print() {
-        System.out.println(color + "|€€€€€€€€€€€€€€€|");
+        System.out.println(color + "|$$$$$$$$$$$$$$$|");
         System.out.println("|               |");
         if (move.equals(""))
-            System.out.println("|      " + number + "        |");
+            System.out.println("|       " + number + "       |");
         else {
-            System.out.print("|      " + move);
-            for (int i = 6 + move.length(); i < 15; i++)
+            System.out.print("|    " + move);
+            for (int i = 4 + move.length(); i < 15; i++)
                 System.out.print(" ");
             System.out.println("|");
         }
         System.out.println("|               |");
-        System.out.println("|€€€€€€€€€€€€€€€|" + ANSI_RESET);
+        System.out.println("|$$$$$$$$$$$$$$$|" + ANSI_RESET);
     }
 
     int getNumber() {

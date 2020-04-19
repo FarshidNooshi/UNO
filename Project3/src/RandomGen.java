@@ -8,7 +8,7 @@ public class RandomGen {
     Random random;
 
     public RandomGen() {
-        random = new Random(3);
+        random = new Random(new Random().nextInt());
     }
 
     public int random(int mod) {

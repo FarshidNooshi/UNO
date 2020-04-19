@@ -18,8 +18,10 @@ public class Human extends Player {
         } else if (cardSheet.getOnTop().getMove().equals("Draw2") && cardSheet.getUsed() != -1) {
             boolean can = false;
             for (Card card : cardArrayList)
-                if (card.getMove().equals("Draw2"))
+                if (card.getMove().equals("Draw2")) {
                     can = true;
+                    break;
+                }
             if (!can) {
                 int cnt = cardSheet.getUsed();
                 cnt = (cnt + 1) * 2;
@@ -48,8 +50,10 @@ public class Human extends Player {
         } else if (cardSheet.getOnTop().getMove().equals("WildDraw") && cardSheet.getUsed() != -1) {
             boolean can = false;
             for (Card card : cardArrayList)
-                if (card.getMove().equals("WildDraw"))
+                if (card.getMove().equals("WildDraw")) {
                     can = true;
+                    break;
+                }
             if (!can) {
                 int cnt = cardSheet.getUsed();
                 cnt = (cnt + 1) * 4;
@@ -87,12 +91,16 @@ public class Human extends Player {
             Card tmp = cardSheet.getNewCard();
             this.addCard(tmp);
             if (cardSheet.valid(this, tmp)) {
+                System.out.println(color + "this Card added and removed :");
+                tmp.print();
                 cardSheet.setOnTop(tmp);
                 removeCard(tmp);
                 if (cardSheet.getOnTop().getMove().equals("WildDraw") || cardSheet.getOnTop().getMove().equals("WildCol"))
                     return topModify(cardSheet, scanner);
-                return 3;
+                return 1 + (tmp.getMove().equals("Reverse") ? 1 : 0);
             }
+            System.out.println(color + "This card is added: ");
+            tmp.print();
             return 3;
         }
 
@@ -101,34 +109,14 @@ public class Human extends Player {
 
         int row = scanner.nextInt() - 1, column = scanner.nextInt() - 1;
         Card selected = cardArrayList.get(row * 4 + column);
-        if (!cardSheet.valid(this, selected)) {
-            System.out.println(cardSheet.getUsed());
+        if (!cardSheet.valid(this, selected))
             return -1;
-        }
         cardSheet.setOnTop(selected);
         removeCard(selected);
         if (cardSheet.getOnTop().getMove().equals("WildDraw") || cardSheet.getOnTop().getMove().equals("WildCol")) {
             return topModify(cardSheet, scanner);
         }
         return 1 + (selected.getMove().equals("Reverse") ? 1 : 0);
-    }
-
-    private int topModify(CardSheet cardSheet, Scanner scanner) {
-        System.out.println(color + "Please enter a color for the cards: [y] yellow [b] blue [r] red [g] green");
-        char inp = scanner.next().charAt(0);
-        if (inp == 'y')
-            cardSheet.getOnTop().setColor(ANSI_YELLOW);
-        else if (inp == 'b')
-            cardSheet.getOnTop().setColor(ANSI_BLUE);
-        else if (inp == 'r')
-            cardSheet.getOnTop().setColor(ANSI_RED);
-        else if (inp == 'g')
-            cardSheet.getOnTop().setColor(ANSI_GREEN);
-        else {
-            System.out.println("What Are you doing ?!");
-            return -1;
-        }
-        return 3;
     }
 
 }
