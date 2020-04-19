@@ -1,16 +1,36 @@
 // In The Name Of GOD
+
 import java.util.Scanner;
 
+/**
+ * this class is a subclass of player and works for human players.
+ */
+
 public class Human extends Player {
+    /**
+     * is the constructor
+     *
+     * @param id is the id for player's id
+     */
     public Human(int id) {
         super(id);
     }
 
+    /**
+     * override method for doing a move in the game.
+     *
+     * @param scanner   is the initial scanner of the game
+     * @param cardSheet is the initial cardSheet of the game
+     * @return
+     */
     @Override
     public int move(Scanner scanner, CardSheet cardSheet) {
         cardSheet.getOnTop().print();
         printUserCards();
 
+        /**
+         * first checking the top card for seeing if we should skip or receive cards or ...
+         */
         if (cardSheet.getOnTop().getMove().equals("Skip") && cardSheet.getUsed() == 0) {
             cardSheet.setUsed(-1);
             System.out.println(color + "Skipped" + ANSI_RESET);
@@ -36,15 +56,16 @@ public class Human extends Player {
             System.out.println("i means row number and j means column number. card at the top left corner is 1 1" + ANSI_RESET);
 
             int row = scanner.nextInt() - 1, column = scanner.nextInt() - 1;
-            Card selected = cardArrayList.get(row * 4 + column);
+            if (!valid(row, column))
+                return -1;
+            Card selected = cardArrayList.get(row * 8 + column);
 
             if (selected.getMove().equals("Draw2")) {
                 int num = cardSheet.getUsed();
                 cardSheet.setOnTop(selected);
                 removeCard(selected);
                 cardSheet.setUsed(num + 1);
-            }
-            else
+            } else
                 return -1;
             return 3;
         } else if (cardSheet.getOnTop().getMove().equals("WildDraw") && cardSheet.getUsed() != -1) {
@@ -68,7 +89,9 @@ public class Human extends Player {
             System.out.println("i means row number and j means column number. card at the top left corner is 1 1" + ANSI_RESET);
 
             int row = scanner.nextInt() - 1, column = scanner.nextInt() - 1;
-            Card selected = cardArrayList.get(row * 4 + column);
+            if (!valid(row, column))
+                return -1;
+            Card selected = cardArrayList.get(row * 8 + column);
 
             if (selected.getMove().equals("WildDraw")) {
                 int num = cardSheet.getUsed();
@@ -76,8 +99,7 @@ public class Human extends Player {
                 removeCard(selected);
                 cardSheet.setUsed(num + 1);
                 return topModify(cardSheet, scanner);
-            }
-            else
+            } else
                 return -1;
         }
 
@@ -108,14 +130,15 @@ public class Human extends Player {
         System.out.println("i means row number and j means column number. card at the top left corner is 1 1" + ANSI_RESET);
 
         int row = scanner.nextInt() - 1, column = scanner.nextInt() - 1;
-        Card selected = cardArrayList.get(row * 4 + column);
+        if (!valid(row, column))
+            return -1;
+        Card selected = cardArrayList.get(row * 8 + column);
         if (!cardSheet.valid(this, selected))
             return -1;
         cardSheet.setOnTop(selected);
         removeCard(selected);
-        if (cardSheet.getOnTop().getMove().equals("WildDraw") || cardSheet.getOnTop().getMove().equals("WildCol")) {
+        if (cardSheet.getOnTop().getMove().equals("WildDraw") || cardSheet.getOnTop().getMove().equals("WildCol"))
             return topModify(cardSheet, scanner);
-        }
         return 1 + (selected.getMove().equals("Reverse") ? 1 : 0);
     }
 

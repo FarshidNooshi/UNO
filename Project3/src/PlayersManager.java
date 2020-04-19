@@ -1,21 +1,33 @@
 // In The Name Of GOD
+
 import java.util.Scanner;
 
-public class PlayersManager implements Strings {
-    private RandomGen randomGen;
-    private Scanner scanner;
-    private Player[] players;
-    private int direction; // 1 -> clockWise, (numberOfPlayers - 1) -> counterClockWise
-    private int numberOfComputers, numberOfPlayers, currentTurn;
-    private boolean[] isComputer;
+/**
+ * last but not least...
+ * this the our third most important method of the game that controls and manages the players movements and actions or it prints and ...
+ * this class is built for better managing and working with players.
+ */
 
-    public PlayersManager(int numberOfPlayers, int numberOfComputers, Scanner scanner) {
+class PlayersManager implements Strings {
+    private Scanner scanner; // initial scanner of the game
+    private Player[] players; // players arraylist
+    private int direction; // 1 -> clockWise, (numberOfPlayers - 1) -> counterClockWise
+    private int numberOfPlayers;
+    private int currentTurn;
+    private boolean[] isComputer; // if true means the user is computer
+
+    /**
+     * constructor
+     * @param numberOfPlayers is the number of players in the game
+     * @param numberOfComputers is the number of computer players in the game
+     * @param scanner is the initial scanner in the game
+     */
+    PlayersManager(int numberOfPlayers, int numberOfComputers, Scanner scanner) {
         this.scanner = scanner;
-        this.numberOfComputers = numberOfComputers;
         this.numberOfPlayers = numberOfPlayers;
         players = new Player[numberOfPlayers];
         isComputer = new boolean[numberOfPlayers];
-        randomGen = new RandomGen();
+        RandomGen randomGen = new RandomGen();
         currentTurn = 0;
         direction = 1;
 
@@ -29,20 +41,35 @@ public class PlayersManager implements Strings {
             players[i] = isComputer[i] ? new Computer(i) : new Human(i);
     }
 
-    public Player getPlayer(int idx) {
+    /**
+     *
+     * @param idx is a index
+     * @return the player with id = idx
+     */
+    Player getPlayer(int idx) {
         return players[idx];
     }
 
-    public int getNumberOfPlayers() {
+    /**
+     *
+     * @return nomberOfPlayers
+     */
+    int getNumberOfPlayers() {
         return numberOfPlayers;
     }
 
+    /**
+     * reseting the screen by printing new lines
+     */
     private void clrScreen() {
         for (int i = 0; i < 25; i++)
             System.out.println();
     }
 
-    public void print() {
+    /**
+     * prints the direction of the table using characters and number of cards for each player with the players color
+     */
+    private void print() {
         if (direction == 1)
             System.out.println(ANSI_BLUE + "Direction of the table is " + clockwise + ANSI_RESET);
         else
@@ -51,7 +78,12 @@ public class PlayersManager implements Strings {
             System.out.println(players[i].color + "Player " + (i + 1) + " has " + players[i].cardArrayList.size() + " Cards." + ANSI_RESET);
     }
 
-    public void go(CardSheet cardSheet) throws InterruptedException {
+    /**
+     * this method does one step in the game and does one action.
+     * @param cardSheet is the cardSheet of the game
+     * @throws InterruptedException is here because of intellij and throws an exception
+     */
+    void go(CardSheet cardSheet) throws InterruptedException {
         Thread.sleep(3000);
         clrScreen();
         print();
@@ -82,18 +114,30 @@ public class PlayersManager implements Strings {
         currentTurn %= numberOfPlayers;
     }
 
-    public void setDirection(int direction) {
+    /**
+     * direction = 1 -> clockWise
+     * direction = numberOfPlayers - 1 -> counterClockWise
+     * @param direction is the new direction in the table(clockWise or counterClockWise
+     */
+    void setDirection(int direction) {
         this.direction = direction;
     }
 
-    public boolean finish() {
+    /**
+     *
+     * @return true if the game is over
+     */
+    boolean finish() {
         for (int i = 0; i < numberOfPlayers; i++)
-            if (players[i].score == 0)
+            if (players[i].cardArrayList.isEmpty())
                 return true;
         return false;
     }
 
-    public void finished() {
+    /**
+     * sorting players according to their scores.
+     */
+    void finished() {
         for (int i = 0; i < numberOfPlayers; i++)
             for (int j = i + 1; j < numberOfPlayers; j++)
                 if (players[i].score > players[j].score) {

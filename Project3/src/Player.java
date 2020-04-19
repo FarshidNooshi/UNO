@@ -4,12 +4,23 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 
-public abstract class Player implements Strings {
-    protected int score;
-    protected int id;
-    protected ArrayList<Card> cardArrayList;
-    protected String color;
+/**
+ * this abstract class simplifies a player.
+ * this class contains necessary information about a player and its an abstract class for its move method.
+ * my comment for move method explains different return numbers and their meaning to my playerManager.
+ */
 
+public abstract class Player implements Strings {
+    protected int score; // is the score that currently player has
+    protected int id;
+    protected ArrayList<Card> cardArrayList; // cards that the player have
+    protected String color; // is a unique color for the player
+
+    /**
+     * constructor
+     *
+     * @param id is the id of the player for game
+     */
     public Player(int id) {
         this.id = id;
         cardArrayList = new ArrayList<>();
@@ -41,19 +52,33 @@ public abstract class Player implements Strings {
 
     }
 
+    /**
+     * this method prints a players information such as its place in the final table. with it's own color
+     * @param place is the rank of the player in the final ranking
+     */
     void print(int place) {
         System.out.println((score > 0 ? color : ANSI_YELLOW) + "Player " + (id + 1) + " in place " + (place + 1) +
                 " with score " + score + " " + (score != 0 ? "" : winner) + ANSI_RESET);
     }
 
+    /**
+     * this method is for checking the availability of the input that users give for choosing a card to playing with.
+     * @param x is a row number
+     * @param y is a column number
+     * @return true if (x,y) exist.
+     */
     boolean valid(int x, int y) {
-        return x * 4 + y < cardArrayList.size() && y < 4 && y >= 0 && x >= 0;
+        return x * 8 + y < cardArrayList.size() && y < 8 && y >= 0 && x >= 0;
     }
 
+    /**
+     * this method prints a user cards in order of their appearing in cardArrayList.
+     * it prints 8 cards in each row.
+     */
     protected void printUserCards() {
         int sz = cardArrayList.size();
-        for (int i = 0; i < (sz + 3) / 4; i++) {
-            int st = i * 4, len = (sz - i * 4 > 3 ? 4 : sz % 4);
+        for (int i = 0; i < (sz + 7) / 8; i++) {
+            int st = i * 8, len = (sz - st > 7 ? 8 : sz % 8);
             for (int j = st; j < len + st; j++)
                 System.out.print(cardArrayList.get(j).getColor() + "|$$$$$$$$$$$$$$$|    ");
             System.out.println();
@@ -87,6 +112,10 @@ public abstract class Player implements Strings {
         }
     }
 
+    /**
+     *  this method deletes a card from a user.
+     * @param cardToRemove is the card to be removed from a player cardArrayList
+     */
     void removeCard(Card cardToRemove) {
         Iterator<Card> iterator = cardArrayList.iterator();
         while (iterator.hasNext()) {
@@ -99,11 +128,23 @@ public abstract class Player implements Strings {
         }
     }
 
+    /**
+     * unlike the previous method this one will add a specific card to the players ArrayList
+     * @param card is the card to be added for this player
+     */
     void addCard(Card card) {
         cardArrayList.add(card);
         score += card.getScore();
     }
 
+    /**
+     * this method modifies the color of the top card of the table if it's wild.
+     * whether by asking user or randomly choosing a color
+     * this method overrides in computer class.
+     * @param cardSheet is the cardSheet of the game
+     * @param scanner is the scanner for getting the input
+     * @return 3 if it was successful
+     */
     protected int topModify(CardSheet cardSheet, Scanner scanner) {
         boolean flag = true;
         while (flag) {

@@ -2,15 +2,33 @@
 
 import java.util.Scanner;
 
-public class Computer extends Player {
+/**
+ * this subclass is for computer players.
+ * moves of a computer is random.
+ * overriding the move method for using it in this class.
+ */
 
-    RandomGen randomGen;
+class Computer extends Player {
 
-    public Computer(int id) {
+    private RandomGen randomGen;
+
+    /**
+     * constructor
+     *
+     * @param id is the player id
+     */
+    Computer(int id) {
         super(id);
         randomGen = new RandomGen();
     }
 
+    /**
+     * this method is mostly the same as human method except that this version doesn't ask for inputs asking for try again.
+     *
+     * @param scanner   is the scanner of the game
+     * @param cardSheet is the cardSheet of the game
+     * @return values are described in its parent method
+     */
     @Override
     public int move(Scanner scanner, CardSheet cardSheet) {
         if (cardSheet.getOnTop().getMove().equals("Skip") && cardSheet.getUsed() == 0) {
@@ -34,11 +52,11 @@ public class Computer extends Player {
                 return 3;
             }
 
-            int row = randomGen.random((cardArrayList.size() + 3) / 4);
-            int column = randomGen.random(4);
+            int row = randomGen.random((cardArrayList.size() + 7) / 8);
+            int column = randomGen.random(8);
             if (!valid(row, column))
                 return -1;
-            Card selected = cardArrayList.get(row * 4 + column);
+            Card selected = cardArrayList.get(row * 8 + column);
 
             if (selected.getMove().equals("Draw2")) {
                 int num = cardSheet.getUsed();
@@ -65,12 +83,12 @@ public class Computer extends Player {
                 return 3;
             }
 
-            int row = randomGen.random((cardArrayList.size() + 3) / 4);
-            int column = randomGen.random(4);
+            int row = randomGen.random((cardArrayList.size() + 7) / 8);
+            int column = randomGen.random(8);
             if (!valid(row, column))
                 return -1;
 
-            Card selected = cardArrayList.get(row * 4 + column);
+            Card selected = cardArrayList.get(row * 8 + column);
 
             if (selected.getMove().equals("WildDraw")) {
                 int num = cardSheet.getUsed();
@@ -104,12 +122,12 @@ public class Computer extends Player {
             return 3;
         }
 
-        int row = randomGen.random((cardArrayList.size() + 3) / 4);
-        int column = randomGen.random(4);
+        int row = randomGen.random((cardArrayList.size() + 7) / 8);
+        int column = randomGen.random(8);
         if (!valid(row, column))
             return -1;
 
-        Card selected = cardArrayList.get(row * 4 + column);
+        Card selected = cardArrayList.get(row * 8 + column);
         if (!cardSheet.valid(this, selected))
             return -1;
         cardSheet.setOnTop(selected);
@@ -120,6 +138,14 @@ public class Computer extends Player {
         return 1 + (selected.getMove().equals("Reverse") ? 1 : 0);
     }
 
+    /**
+     * this method is override method of topModifying parent method
+     * if the top card is wild and needs to asking for a color change we will use this method.
+     *
+     * @param cardSheet is the cardSheet of the game
+     * @param scanner   is the scanner for getting the input
+     * @return only 3 cuz it's always successful
+     */
     @Override
     protected int topModify(CardSheet cardSheet, Scanner scanner) {
         int inp = randomGen.random(4);

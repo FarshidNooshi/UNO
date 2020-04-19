@@ -1,4 +1,8 @@
 // In The Name Of GOD
+
+/**
+ * initial strings of the colors from stackoverflow.com
+ */
 interface Strings {
     String ANSI_RESET = "\u001B[0m";
     String ANSI_RED = "\u001B[31m";
