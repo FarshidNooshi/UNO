@@ -42,37 +42,33 @@ public class PlayersManager implements Strings {
             System.out.println();
     }
 
-    public void setDirection(int direction) {
-        this.direction = direction;
-    }
-
     public void print() {
         if (direction == 1)
-            System.out.println(ANSI_BLUE + clockwise + ANSI_RESET);
+            System.out.println(ANSI_BLUE + "Direction of the table is " + clockwise + ANSI_RESET);
         else
-            System.out.println(ANSI_RED + counterClockwise + ANSI_RESET);
+            System.out.println(ANSI_RED + "Direction of the table is " + counterClockwise + ANSI_RESET);
         for (int i = 0; i < numberOfPlayers; i++)
-            System.out.println(players[i].color + players[i].cardArrayList.size() + ANSI_RESET);
+            System.out.println(players[i].color + "Player " + (i + 1) + " has " + players[i].cardArrayList.size() + " Cards." + ANSI_RESET);
     }
 
     public void go(CardSheet cardSheet) throws InterruptedException {
         Thread.sleep(1000);
         clrScreen();
         print();
-        System.out.print(players[currentTurn].color + "Player " + currentTurn + " should move\n" + ANSI_RESET);
+        System.out.print(players[currentTurn].color + "Player " + (currentTurn + 1) + " should move\n" + ANSI_RESET);
 
         int tmp = players[currentTurn].move(scanner, cardSheet);
         while (tmp == -1) {
             Thread.sleep(1000);
             clrScreen();
             print();
-            System.out.print(players[currentTurn].color + "Player " + currentTurn + " should move again\n" + ANSI_RESET);
+            System.out.print(players[currentTurn].color + "Player " + (currentTurn + 1) + " should move again\n" + ANSI_RESET);
             tmp = players[currentTurn].move(scanner, cardSheet);
         }
 
         if (tmp == 2) {
             direction = (direction == 1 ? numberOfPlayers - 1 : 1);
-            cardSheet.setUsed(true);
+            cardSheet.setUsed(-1);
         }
 
         currentTurn += direction;
@@ -84,6 +80,16 @@ public class PlayersManager implements Strings {
             if (players[i].score == 0)
                 return true;
         return false;
+    }
+
+    public void finished() {
+        for (int i = 0; i < numberOfPlayers; i++)
+            for (int j = i + 1; j < numberOfPlayers; j++)
+                if (players[i].score > players[j].score) {
+                    Player tmp = players[i];
+                    players[i] = players[j];
+                    players[j] = tmp;
+                }
     }
 
 }

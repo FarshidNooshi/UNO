@@ -3,9 +3,9 @@ public class CardSheet implements Strings {
 
     private Card[] cards;
     private boolean[] inUse;
-    RandomGen randomGen;
+    private RandomGen randomGen;
     private Card onTop;
-    private boolean used;
+    private int used;
     private int ptr;
 
     public Card getNewCard() {
@@ -29,23 +29,41 @@ public class CardSheet implements Strings {
         ptr = getPtr(ptr, ANSI_RED);
 
         for (int i = 0; i < 4; i++)
-            cards[ptr++] = new Card(50, ANSI_BLACK, "WildCol", -1);
+            cards[ptr] = new Card(50, ANSI_BLACK, "WildCol", -1, ptr++);
 
         for (int i = 0; i < 4; i++)
-            cards[ptr++] = new Card(50, ANSI_BLACK, "WildDraw", -1);
+            cards[ptr] = new Card(50, ANSI_BLACK, "WildDraw", -1, ptr++);
 
         int tmp = randomGen.random(ptr);
         onTop = cards[tmp];
         inUse[tmp] = true;
 
+        if (onTop.getMove().equals("WildDraw")) {
+            int rand = randomGen.random(4);
+            if (rand == 0)
+                onTop.setColor(ANSI_BLUE);
+            else if (rand == 1)
+                onTop.setColor(ANSI_RED);
+            else if (rand == 2)
+                onTop.setColor(ANSI_GREEN);
+            else
+                onTop.setColor(ANSI_YELLOW);
+        } else if (onTop.getMove().equals("WildCol")) {
+            int rand = randomGen.random(4);
+            if (rand == 0)
+                onTop.setColor(ANSI_BLUE);
+            else if (rand == 1)
+                onTop.setColor(ANSI_RED);
+            else if (rand == 2)
+                onTop.setColor(ANSI_GREEN);
+            else
+                onTop.setColor(ANSI_YELLOW);
+        }
+
         int numberOfPlayers = playersManager.getNumberOfPlayers();
         for (int i = 0; i < numberOfPlayers; i++)
-            for (int j = 0; j < 7; j++) {
-                while (inUse[tmp])
-                    tmp = randomGen.random(ptr);
-                playersManager.getPlayer(i).addCard(cards[tmp]);
-                inUse[tmp] = true;
-            }
+            for (int j = 0; j < 7; j++)
+                playersManager.getPlayer(i).addCard(getNewCard());
     }
 
     public boolean valid(Player player, Card toBeCheck) {
@@ -55,7 +73,7 @@ public class CardSheet implements Strings {
                     return false;
             return true;
         } else if (toBeCheck.getMove().equals("WildCol")) {
-            return true;
+            return !(onTop.getMove().equals("WildDraw") && used != -1 || onTop.getMove().equals("Draw2") && used != -1);
         } else if (!toBeCheck.getMove().equals(""))
             return toBeCheck.getMove().equals(onTop.getMove()) ||
                     toBeCheck.getColor().equals(onTop.getColor());
@@ -63,7 +81,7 @@ public class CardSheet implements Strings {
                 toBeCheck.getColor().equals(onTop.getColor());
     }
 
-    public void setUsed(boolean used) {
+    public void setUsed(int used) {
         this.used = used;
     }
 
@@ -71,14 +89,27 @@ public class CardSheet implements Strings {
         return onTop;
     }
 
+    public int getUsed() {
+        return used;
+    }
+
+    public void setOnTop(Card onTop) {
+        inUse[onTop.getId()] = false;
+        used = 0;
+        this.onTop = onTop;
+    }
+
     private int getPtr(int ptr, String color) {
         for (int i = 0; i < 10; i++)
-            cards[ptr++] = new Card(i, color, "", i);
+            cards[ptr] = new Card(i, color, "", i, ptr++);
         for (int i = 1; i < 10; i++)
-            cards[ptr++] = new Card(i, color, "", i);
-        cards[ptr++] = new Card(20, color, "Skip", -1);
-        cards[ptr++] = new Card(20, color, "Reverse", -1);
-        cards[ptr++] = new Card(20, color, "Draw2", -1);
+            cards[ptr] = new Card(i, color, "", i, ptr++);
+        cards[ptr] = new Card(20, color, "Skip", -1, ptr++);
+        cards[ptr] = new Card(20, color, "Reverse", -1, ptr++);
+        cards[ptr] = new Card(20, color, "Draw2", -1, ptr++);
+        cards[ptr] = new Card(20, color, "Skip", -1, ptr++);
+        cards[ptr] = new Card(20, color, "Reverse", -1, ptr++);
+        cards[ptr] = new Card(20, color, "Draw2", -1, ptr++);
         return ptr;
     }
 }

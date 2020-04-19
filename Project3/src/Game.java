@@ -1,19 +1,21 @@
 // In The Name Of GOD
+
 import java.util.Scanner;
 
-public class Game implements Strings {
+class Game implements Strings {
     private Scanner scanner;
     private PlayersManager playersManager;
     private CardSheet cardSheet;
 
-    public Game() {
+    Game() {
         scanner = new Scanner(System.in);
         cardSheet = new CardSheet();
     }
 
     void start() throws InterruptedException {
-        System.out.print("Please enter number of players: \nplease enter number of players to be computer: ");
+        System.out.print("Please enter number of players: ");
         int numberOfPlayers = scanner.nextInt();
+        System.out.print("\nplease enter number of players to be computer: ");
         int numberOfComputers = scanner.nextInt();
         System.out.println();
 
@@ -26,13 +28,14 @@ public class Game implements Strings {
 
         playersManager = new PlayersManager(numberOfPlayers, numberOfComputers, scanner);
         cardSheet.initialize(playersManager);
+
         while (!playersManager.finish())
             playersManager.go(cardSheet);
         endGame();
     }
 
     private void endGame() {
-        playersManager.finish();
+        playersManager.finished();
 
         for (int i = 0; i < playersManager.getNumberOfPlayers(); i++)
             playersManager.getPlayer(i).print(i);
